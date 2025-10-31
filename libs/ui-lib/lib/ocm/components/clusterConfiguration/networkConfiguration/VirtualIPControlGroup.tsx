@@ -14,6 +14,7 @@ import {
   NetworkConfigurationValues,
   FormikStaticField,
   NETWORK_TYPE_SDN,
+  DUAL_STACK,
   selectMachineNetworkCIDR,
   getVipValidationsById,
   PopoverIcon,
@@ -112,8 +113,16 @@ export const VirtualIPControlGroup = ({
     [cluster.apiVips, cluster.ingressVips, setFieldValue],
   );
 
-  const setVipValue = (field: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    setFieldValue(field, [{ ip: e.target.value, clusterId: cluster.id }], true);
+  const setVipValueAt = (
+    field: 'apiVips' | 'ingressVips',
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const current =
+      (values as unknown as Record<string, { ip?: string; clusterId?: string }[]>)[field] || [];
+    const next = [...current];
+    next[index] = { ip: e.target.value, clusterId: cluster.id };
+    setFieldValue(field, next, true);
   };
 
   return (
@@ -195,10 +204,27 @@ export const VirtualIPControlGroup = ({
                     helperText={ipHelperText}
                     isRequired
                     onChange={(e) =>
-                      setVipValue('apiVips', e as React.ChangeEvent<HTMLInputElement>)
+                      setVipValueAt('apiVips', 0, e as React.ChangeEvent<HTMLInputElement>)
                     }
                   />
                 </StackItem>
+                {values.stackType === DUAL_STACK && (
+                  <StackItem>
+                    <OcmInputField
+                      label={
+                        <>
+                          <span>API IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                        </>
+                      }
+                      name="apiVips.1.ip"
+                      helperText={ipHelperText}
+                      isRequired
+                      onChange={(e) =>
+                        setVipValueAt('apiVips', 1, e as React.ChangeEvent<HTMLInputElement>)
+                      }
+                    />
+                  </StackItem>
+                )}
                 <StackItem>
                   <OcmInputField
                     name="ingressVips.0.ip"
@@ -210,10 +236,27 @@ export const VirtualIPControlGroup = ({
                     helperText={ipHelperText}
                     isRequired
                     onChange={(e) =>
-                      setVipValue('ingressVips', e as React.ChangeEvent<HTMLInputElement>)
+                      setVipValueAt('ingressVips', 0, e as React.ChangeEvent<HTMLInputElement>)
                     }
                   />
                 </StackItem>
+                {values.stackType === DUAL_STACK && (
+                  <StackItem>
+                    <OcmInputField
+                      name="ingressVips.1.ip"
+                      label={
+                        <>
+                          <span>Ingress IP</span> <PopoverIcon bodyContent={ipPopoverContent} />
+                        </>
+                      }
+                      helperText={ipHelperText}
+                      isRequired
+                      onChange={(e) =>
+                        setVipValueAt('ingressVips', 1, e as React.ChangeEvent<HTMLInputElement>)
+                      }
+                    />
+                  </StackItem>
+                )}
               </Stack>
             )}
           </FieldArray>
