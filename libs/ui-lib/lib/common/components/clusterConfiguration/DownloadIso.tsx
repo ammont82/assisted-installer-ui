@@ -48,7 +48,7 @@ const DownloadIso = ({
 
   return (
     <>
-      <ModalBody>
+      <ModalBody style={{ paddingBlockEnd: 0 }}>
         <Stack hasGutter>
           <StackItem>
             <Alert
@@ -104,7 +104,7 @@ const DownloadIso = ({
               />
             </DetailList>
           </StackItem>
-          <StackItem>
+          <StackItem className="pf-u-mb-0">
             <Alert
               variant="info"
               isInline
@@ -113,30 +113,30 @@ const DownloadIso = ({
               )}`}
             />
           </StackItem>
+          <StackItem>
+            <Button
+              variant={ButtonVariant.primary}
+              data-testid="download-iso-btn"
+              isDisabled={!downloadUrl}
+              component={'a'}
+              target="_blank"
+              href={downloadUrl}
+              download
+              rel="noopener noreferrer"
+            >
+              {t('ai:Download Discovery ISO')}
+            </Button>
+            <Button variant={ButtonVariant.secondary} onClick={onClose} data-testid="close-iso-btn">
+              {t('ai:Close')}
+            </Button>
+            {onReset && (
+              <Button variant={ButtonVariant.link} onClick={onReset} data-testid="edit-iso-btn">
+                {t('ai:Edit ISO configuration')}
+              </Button>
+            )}
+          </StackItem>
         </Stack>
       </ModalBody>
-      <ModalFooter>
-        <Button
-          variant={ButtonVariant.primary}
-          data-testid="download-iso-btn"
-          isDisabled={!downloadUrl}
-          component={'a'}
-          target="_blank"
-          href={downloadUrl}
-          download
-          rel="noopener noreferrer"
-        >
-          {t('ai:Download Discovery ISO')}
-        </Button>
-        <Button variant={ButtonVariant.secondary} onClick={onClose} data-testid="close-iso-btn">
-          {t('ai:Close')}
-        </Button>
-        {onReset && (
-          <Button variant={ButtonVariant.link} onClick={onReset} data-testid="edit-iso-btn">
-            {t('ai:Edit ISO configuration')}
-          </Button>
-        )}
-      </ModalFooter>
     </>
   );
 };
